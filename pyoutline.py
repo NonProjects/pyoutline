@@ -111,8 +111,10 @@ def client(outline_key, random_port, port):
         except Exception as e:
             click.echo(red(e))
             exit(1)
+    
+    if len(keys) > 1:
+        click.echo(red('No working keys found.'))
 
-    click.echo(red('No working keys found.'))
     exit(1)
 
 if __name__ == '__main__':
