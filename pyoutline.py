@@ -1,8 +1,9 @@
 import click
 
+from getpass import getpass
 from traceback import format_exception
 from sys import exit, argv as sys_argv
-from subprocess import call
+from subprocess import Popen
 from pathlib import Path
 
 from tools import get_free_port, OutlineKey
@@ -70,6 +71,10 @@ def to_shadowsocks(outline_key, random_port, port):
     help='Outline VPN access Key (ss://...), can be path to file with keys'
 )
 @click.option(
+    '--offset', '-o', type=int, default=1,
+    help='Key file offset. We will start from this Key'
+)
+@click.option(
     '--random-port', '-r', is_flag=True,
     help='Will set random listener port, otherwise 25250'
 )
@@ -77,7 +82,7 @@ def to_shadowsocks(outline_key, random_port, port):
     '--port', '-p', type=click.IntRange(49152,65535),
     help='Listener proxy port'
 )
-def client(outline_key, random_port, port):
+def client(outline_key, random_port, port, offset):
     """Will start Outline Proxy from Key / file with Keys"""
 
     keys = Path(outline_key)
@@ -88,20 +93,57 @@ def client(outline_key, random_port, port):
     else:
         keys = [outline_key]
     
-    for key in keys:
-        click.echo(yellow(f'Trying {key[:32]}...'))
+    if offset < 1 or offset > len(keys):
+        click.echo(red('Invalid offset specified!'))
 
+    enter, next_ = blue('ENTER'), blue('NEXT')
+    ctrld, previ = magenta('CTRL+D'), magenta('PREVIOUS')
+    ctrlc, exit_ = cyan('CTRL+C'), cyan('EXIT')
+    
+    if len(keys) > 1:
+        click.echo(
+            f"""\n@ Press {enter}  to select {next_} Key\n"""
+            f"""@ Press {ctrld} to select {previ} Key\n"""
+            f"""@ Press {ctrlc} to close connection and {exit_}"""
+        )
+    else:
+        click.echo(f"\n@ Press {ctrlc} to close connection and {exit_}")
+
+    current_key_position = 0 if not offset else offset - 1
+
+    while True:
+        if current_key_position + 1 > len(keys):
+            current_key_position -= 1
+
+        key_num = current_key_position + 1
+        key = keys[current_key_position]
+
+        click.echo(yellow(f'\r\nTrying [#{key_num}] ({key[:32]}...)'))
         try:
             ok = OutlineKey(key)
 
             if not ok.is_alive:
-                click.echo(red(f'{key[:32]}... is offline or not valid.\n'))
+                click.echo(red(f'Outline Key [#{key_num}] is offline or not valid.\n'))
                 continue
             else:
-                click.echo(green(f'{key[:32]}... is OK! Connecting...\n'))
+                click.echo(green(f'Outline Key [#{key_num}] is OK! Connecting...\n'))
 
             ss = ok.shadowsocks(random_port=random_port, port=port)
-            call(ss.replace('"','').split(' '))
+            try:
+                ss_process = Popen(ss.replace('"','').split(' '))
+                if len(keys) == 1:
+                    ss_process.wait()
+                    exit()
+                else:
+                    getpass(prompt=''); ss_process.terminate()
+                    print('\x1b[1A', end='') # This will move cursor up
+                    current_key_position += 1; continue
+            except EOFError:
+                if current_key_position > 0:
+                    current_key_position -= 1
+
+                ss_process.terminate()
+                continue
 
         except ValueError:
             click.echo(red('Invalid Key specified!'))
@@ -112,10 +154,5 @@ def client(outline_key, random_port, port):
             click.echo(red(e))
             exit(1)
     
-    if len(keys) > 1:
-        click.echo(red('No working keys found.'))
-
-    exit(1)
-
 if __name__ == '__main__':
     safe_cli()
