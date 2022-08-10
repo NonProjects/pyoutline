@@ -6,8 +6,9 @@ from sys import exit, argv as sys_argv
 from subprocess import Popen
 from pathlib import Path
 
-from tools import get_free_port, OutlineKey
-
+from pyoutline_tools import (
+    get_free_port, OutlineKey
+)
 COLORS = [
     'red','cyan','blue','green',
     'white','yellow','magenta',
