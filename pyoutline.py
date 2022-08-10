@@ -95,6 +95,7 @@ def client(outline_key, random_port, port, offset):
     
     if offset < 1 or offset > len(keys):
         click.echo(red('Invalid offset specified!'))
+        exit()
 
     enter, next_ = blue('ENTER'), blue('NEXT')
     ctrld, previ = magenta('CTRL+D'), magenta('PREVIOUS')
@@ -147,6 +148,7 @@ def client(outline_key, random_port, port, offset):
 
         except ValueError:
             click.echo(red('Invalid Key specified!'))
+            exit()
         except FileNotFoundError:
             ss = ss.replace('ss-local', 'sslocal')
             call(ss.replace('"','').split(' '))
