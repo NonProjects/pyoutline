@@ -47,7 +47,7 @@ def safe_cli():
     '--port', '-p', type=click.IntRange(49152,65535),
     help='Listener proxy port'
 )
-def to_shadowsocks(outline_key, random_port, port):
+def to_ss(outline_key, random_port, port):
     """Will transform Outline Proxy Key/file with Keys to ShadowSocks"""
 
     keys = Path(outline_key)
@@ -62,7 +62,7 @@ def to_shadowsocks(outline_key, random_port, port):
         try:
             ok = OutlineKey(key)
             ss = ok.shadowsocks(random_port=random_port, port=port)
-            click.echo(bright_black(ss + '\n'))
+            click.echo(bright_black(ss))
         except ValueError:
             click.echo(red('Invalid Key specified!'))
 

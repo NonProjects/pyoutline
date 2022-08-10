@@ -31,7 +31,7 @@ pyoutline client -k "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@ak1344.free.www.o
 ```
 If you want to transform Outline Key into the ShadowSocks:
 ```
-pyoutline to-shadowsocks -k "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@ak1344.free.www.outline.network:8118"
+pyoutline to-ss -k "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@ak1344.free.www.outline.network:8118"
 # ^ ss-local -s "ak1344.free.www.outline.network" -p 8118 -k "cdBIDV42DCwnfIN" -m "aes-256-gcm" -l 53735
 ```
 Set your own port or ask system to set the free one
