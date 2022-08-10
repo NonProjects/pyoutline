@@ -109,7 +109,8 @@ def client(outline_key, random_port, port, offset):
         )
     else:
         click.echo(f"\n@ Press {ctrlc} to close connection and {exit_}")
-
+    
+    replace_ss = False # If ss-local fails will be used sslocal
     current_key_position = 0 if not offset else offset - 1
 
     while True:
@@ -131,7 +132,11 @@ def client(outline_key, random_port, port, offset):
 
             ss = ok.shadowsocks(random_port=random_port, port=port)
             try:
+                if replace_ss:
+                    ss = ss.replace('ss-local', 'sslocal')
+
                 ss_process = Popen(ss.replace('"','').split(' '))
+
                 if len(keys) == 1:
                     ss_process.wait()
                     exit()
@@ -139,6 +144,7 @@ def client(outline_key, random_port, port, offset):
                     getpass(prompt=''); ss_process.terminate()
                     print('\x1b[1A', end='') # This will move cursor up
                     current_key_position += 1; continue
+
             except EOFError:
                 if current_key_position > 0:
                     current_key_position -= 1
@@ -148,10 +154,14 @@ def client(outline_key, random_port, port, offset):
 
         except ValueError:
             click.echo(red('Invalid Key specified!'))
-            exit()
+            exit(1)
         except FileNotFoundError:
-            ss = ss.replace('ss-local', 'sslocal')
-            call(ss.replace('"','').split(' '))
+            if replace_ss:
+                click.echo(red('You should install ShadowSocks'))
+                exit(1)
+            else:
+                click.echo(yellow('Can\'t find ss-local. Try to use sslocal...'))
+                replace_ss = True
         except Exception as e:
             click.echo(red(e))
             exit(1)
