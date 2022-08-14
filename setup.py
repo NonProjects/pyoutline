@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="pyoutline",
-    version='0.2.2',
+    version='0.2.3',
     license='MIT',
     description = 'A simple CLI app to start Outline Proxy',
     long_description = open('README.md').read(),
