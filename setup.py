@@ -10,7 +10,7 @@ setup(
     author = 'NonProjects',
     author_email = 'thenonproton@pm.me',
     url = 'https://github.com/NonProjects/pyoutline',
-    download_url = 'https://github.com/NonProjects/pyoutline/archive/refs/tags/v0.2.2.tar.gz',
+    download_url = 'https://github.com/NonProjects/pyoutline/archive/refs/tags/v0.2.3.tar.gz',
     py_modules=['pyoutline', 'pyoutline_tools'],
     install_requires=['click'],
     entry_points='''
