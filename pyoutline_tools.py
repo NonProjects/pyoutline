@@ -1,5 +1,6 @@
 from socket import socket, gaierror
 from base64 import urlsafe_b64decode
+from binascii import Error as BAError
 
 def get_free_port():
     """This func will return free port"""
@@ -11,10 +12,20 @@ class OutlineKey:
     def __init__(self, key: str):
         self.key = key
         try:
-            pass_enc = urlsafe_b64decode(key.split('ss://')[1].split('@')[0])
+            pass_enc_b64 = key.split('ss://')[1].split('@')[0]
+
+            for _ in range(3):
+                try:
+                    pass_enc = urlsafe_b64decode(pass_enc_b64)
+                    break
+                except BAError:
+                    pass_enc_b64 += '='
+            else:
+                raise Exception
+
             self.enc, self.password = pass_enc.decode().split(':')
 
-            server_port = key.split('@')[1].split('#')[0].split(':')
+            server_port = key.split('@')[1].split('#')[0].split('/')[0].split(':')
             self.server, self.port = server_port
         except Exception as e:
             raise ValueError(f'Invalid Key! {e}') from None
