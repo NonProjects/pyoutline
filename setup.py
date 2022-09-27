@@ -6,7 +6,7 @@ ss_archive = f'https://github.com/shadowsocks/shadowsocks/archive/{ss_commit}.zi
 
 setup(
     name="pyoutline",
-    version='0.2.3',
+    version='0.3',
     license='MIT',
     description = 'A simple CLI app to start Outline Proxy',
     long_description = open('README.md').read(),
@@ -14,7 +14,7 @@ setup(
     author = 'NonProjects',
     author_email = 'thenonproton@pm.me',
     url = 'https://github.com/NonProjects/pyoutline',
-    download_url = 'https://github.com/NonProjects/pyoutline/archive/refs/tags/v0.2.3.tar.gz',
+    download_url = 'https://github.com/NonProjects/pyoutline/archive/refs/tags/v0.3.tar.gz',
     py_modules=['pyoutline', 'pyoutline_tools'],
     install_requires=[
         'click', f'shadowsocks @ {ss_archive}'
