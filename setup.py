@@ -1,5 +1,9 @@
 from setuptools import setup
 
+# github.com/shadowsocks/shadowsocks commit from master. For safety.
+ss_commit = '5ff694b2c2978b432918dea6ac104706b25cbf48'
+ss_archive = f'https://github.com/shadowsocks/shadowsocks/archive/{ss_commit}.zip'
+
 setup(
     name="pyoutline",
     version='0.2.3',
@@ -12,7 +16,9 @@ setup(
     url = 'https://github.com/NonProjects/pyoutline',
     download_url = 'https://github.com/NonProjects/pyoutline/archive/refs/tags/v0.2.3.tar.gz',
     py_modules=['pyoutline', 'pyoutline_tools'],
-    install_requires=['click'],
+    install_requires=[
+        'click', f'shadowsocks @ {ss_archive}'
+    ],
     entry_points='''
         [console_scripts]
         pyoutline=pyoutline:safe_cli
