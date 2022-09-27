@@ -1,10 +1,11 @@
 import click
 
 from getpass import getpass
-from traceback import format_exception
-from sys import exit, argv as sys_argv
 from subprocess import Popen
 from pathlib import Path
+
+from traceback import format_exception
+from sys import exit, platform, argv as sys_argv
 
 from pyoutline_tools import (
     get_free_port, OutlineKey
@@ -27,8 +28,8 @@ def safe_cli():
         cli()
     except Exception as e:
         e = ''.join(format_exception(
-            etype = None, 
-            value = e, 
+            etype = None,
+            value = e,
             tb = e.__traceback__
         ))
         click.echo(red(e))
@@ -57,7 +58,7 @@ def to_ss(outline_key, random_port, port):
         keys = [key.strip() for key in keys]
     else:
         keys = [outline_key]
-    
+
     for key in keys:
         try:
             ok = OutlineKey(key)
@@ -93,15 +94,20 @@ def client(outline_key, random_port, port, offset):
         keys = [key.strip() for key in keys]
     else:
         keys = [outline_key]
-    
+
     if offset < 1 or offset > len(keys):
         click.echo(red('Invalid offset specified!'))
         exit()
 
     enter, next_ = blue('ENTER'), blue('NEXT')
-    ctrld, previ = magenta('CTRL+D'), magenta('PREVIOUS')
+
+    if platform.startswith('win'):
+        ctrld, previ = magenta('CTRL+D & ENTER'), magenta('PREVIOUS')
+    else:
+        ctrld, previ = magenta('CTRL+D'), magenta('PREVIOUS')
+
     ctrlc, exit_ = cyan('CTRL+C'), cyan('EXIT')
-    
+
     if len(keys) > 1:
         click.echo(
             f"""\n@ Press {enter}  to select {next_} Key\n"""
@@ -110,9 +116,12 @@ def client(outline_key, random_port, port, offset):
         )
     else:
         click.echo(f"\n@ Press {ctrlc} to close connection and {exit_}")
-    
+
     replace_ss = False # If ss-local fails will be used sslocal
     current_key_position = 0 if not offset else offset - 1
+
+    if random_port:
+        port = get_free_port()
 
     while True:
         if current_key_position + 1 > len(keys):
@@ -120,6 +129,7 @@ def client(outline_key, random_port, port, offset):
 
         key_num = current_key_position + 1
         key = keys[current_key_position]
+        ss_process = None
 
         click.echo(yellow(f'\r\nTrying [#{key_num}] ({key[:32]}...)'))
         try:
@@ -131,7 +141,7 @@ def client(outline_key, random_port, port, offset):
             else:
                 click.echo(green(f'Outline Key [#{key_num}] is OK! Connecting...\n'))
 
-            ss = ok.shadowsocks(random_port=random_port, port=port)
+            ss = ok.shadowsocks(port=port)
             try:
                 if replace_ss:
                     ss = ss.replace('ss-local', 'sslocal')
@@ -142,7 +152,11 @@ def client(outline_key, random_port, port, offset):
                     ss_process.wait()
                     exit()
                 else:
-                    getpass(prompt=''); ss_process.terminate()
+                    code = getpass(prompt='')
+                    if code in ('\x04', '\xa1'):
+                        raise EOFError # Windows-only: CTRL-D+ENTER
+
+                    ss_process.terminate()
                     print('\x1b[1A', end='') # This will move cursor up
                     current_key_position += 1; continue
 
@@ -153,6 +167,10 @@ def client(outline_key, random_port, port, offset):
                 ss_process.terminate()
                 continue
 
+            except KeyboardInterrupt:
+                ss_process.terminate()
+                print(); exit(0)
+
         except ValueError:
             click.echo(red('Invalid Key specified!'))
             exit(1)
@@ -161,11 +179,13 @@ def client(outline_key, random_port, port, offset):
                 click.echo(red('You should install ShadowSocks'))
                 exit(1)
             else:
-                click.echo(yellow('Can\'t find ss-local. Try to use sslocal...'))
+                click.echo(yellow('Can\'t find ss-local. Trying to use sslocal...'))
                 replace_ss = True
         except Exception as e:
             click.echo(red(e))
+            if ss_process:
+                ss_process.terminate()
             exit(1)
-    
+
 if __name__ == '__main__':
     safe_cli()
