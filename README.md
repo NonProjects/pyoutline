@@ -1,4 +1,4 @@
-# PyOutline: A simple CLI app to start Outline Proxy
+# PyOutline: CLI app to start Outline VPN keys
 
 With **PyOutline** you can easily run [ShadowSocks proxy](https://en.wikipedia.org/wiki/Shadowsocks) from the [**Outline keys**](https://getoutline.me/access-keys/).
 
