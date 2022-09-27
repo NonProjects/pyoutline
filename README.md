@@ -15,9 +15,9 @@ pip install ./pyoutline
 ```
 ## Requirements
 
-You will need ShadowSocks. The easiest way to install it:
+You will need ShadowSocks. This installed *by default*:
 ```
-pip install https://github.com/shadowsocks/shadowsocks/archive/master.zip
+pip install https://github.com/shadowsocks/shadowsocks/archive/5ff694b2c2978b432918dea6ac104706b25cbf48.zip
 ```
 If you're on Linux then you can install it via your packet manager:
 ```
