@@ -15,11 +15,11 @@ pip install ./pyoutline
 ```
 ## Requirements
 
-You will need ShadowSocks. This installed *by default*:
+You will need ShadowSocks. Install it via PIP:
 ```
 pip install https://github.com/shadowsocks/shadowsocks/archive/5ff694b2c2978b432918dea6ac104706b25cbf48.zip
 ```
-If you're on Linux then you can install it via your packet manager:
+You can also install it via your packet manager if you're on Linux:
 ```
 apt install shadowsocks-libev # Debian 11
 ```
@@ -29,7 +29,7 @@ The "*How to use*" is pretty simple:
 ```
 pyoutline client -k "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@ak1344.free.www.outline.network:8118"
 ```
-If you want to transform Outline Key into the ShadowSocks:
+If you want to transform Outline Key into the ss-local string:
 ```
 pyoutline to-ss -k "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@ak1344.free.www.outline.network:8118"
 # ^ ss-local -s "ak1344.free.www.outline.network" -p 8118 -k "cdBIDV42DCwnfIN" -m "aes-256-gcm" -l 53735
