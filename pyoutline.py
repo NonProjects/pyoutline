@@ -176,7 +176,10 @@ def client(outline_key, random_port, port, offset):
             exit(1)
         except FileNotFoundError:
             if replace_ss:
-                click.echo(red('You should install ShadowSocks. See pypi.org/project/pyoutline'))
+                click.echo(
+                    red(
+                        'Something wrong with Shadowsocks. '
+                        'See github.com/NotStatilko/shadowsocks'))
                 exit(1)
             else:
                 click.echo(yellow('Can\'t find ss-local. Trying to use sslocal...'))
