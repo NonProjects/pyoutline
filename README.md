@@ -1,6 +1,6 @@
 # PyOutline: CLI app to start Outline VPN keys
 
-With **PyOutline** you can easily run [ShadowSocks proxy](https://en.wikipedia.org/wiki/Shadowsocks) from the [**Outline keys**](https://getoutline.me/access-keys/).
+With **PyOutline** you can easily run [ShadowSocks proxy](https://en.wikipedia.org/wiki/Shadowsocks) from the [**Outline keys**](https://en.wikipedia.org/wiki/Outline_VPN).
 
 ## Installation
 
@@ -13,15 +13,11 @@ pip install pyoutline
 git clone https://github.com/NonProjects/pyoutline
 pip install ./pyoutline
 ```
-## Requirements
+## Optional requirements
 
-You will need ShadowSocks. Install it via PIP:
+You can install latest Shadowsocks if you're on Linux:
 ```
-pip install https://github.com/shadowsocks/shadowsocks/archive/5ff694b2c2978b432918dea6ac104706b25cbf48.zip
-```
-You can also install it via your packet manager if you're on Linux:
-```
-apt install shadowsocks-libev # Debian 11
+apt install shadowsocks-libev # e.g Debian
 ```
 ## Usage
 
